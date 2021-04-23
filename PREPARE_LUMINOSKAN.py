@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Feb  3 13:01:03 2021
-# v2021.02.15
+# v2021.04.23
 @author: Martin.Sladek
 """
 import numpy  as np
 import pandas as pd
 import settings
+import os
 
 
 # Choose, which plate - if 96 well, it has 12 columns, if 384 well, it has 24 columns.
@@ -57,6 +58,7 @@ else:
 
 # Export dataframe as csv file 
 mydir = './data/analysis_output__/'
+os.makedirs(mydir, exist_ok = True)  #creates analysis_output folder in case it is missing
 df.to_csv(f'{mydir}{settings.INPUT_FILES[0]}_signal.csv', index=False)
 
 
