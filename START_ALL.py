@@ -31,7 +31,7 @@ INPUT_DIR = 'data/'
 INPUT_EXT = '.csv'
 
 # input files from Lumi need to be 2, id_signal and id_XY. From LV200 need only 1 trackmate output file.
-INPUT_FILES   = ['190404']
+INPUT_FILES   = ['181115']
 
 # Do you want to plot even empty/low signal wells in XY-heatmap, polar plot and histogram? True or False.
 plot_all_wells = False
@@ -43,7 +43,7 @@ nth = 1
 time_factor = 0.25
 
 # IN REAL HOURS or 0, plot and analyze only data from this timepoint, settings for truncate_t variable - 
-treatment = 75
+treatment = 0
 
 # IN REAL HOURS or None (for whole dataset), plot and analyze only data to this timepoint, settings for end variable
 end_h = None
