@@ -2,8 +2,8 @@
 # type >>> conda activate per2py
 # type >>> spyder
 # open this file in spyder or idle and run with F5
-# v.2021.04.23
-# changelog:  circular colorspace for phase plots 
+# v.2021.05.24
+# changelog:  user can change the range of valid circadian periods easier
 
 from __future__ import division
 
@@ -31,22 +31,26 @@ INPUT_DIR = 'data/'
 INPUT_EXT = '.csv'
 
 # input files from Lumi need to be 2, id_signal and id_XY. From LV200 need only 1 trackmate output file.
-INPUT_FILES   = ['181115']
+INPUT_FILES   = ['210517']
+
+# what is the lowest and highest expected period value (default is 18 and 30 h)
+circ_low = 15
+circ_high = 55
 
 # Do you want to plot even empty/low signal wells in XY-heatmap, polar plot and histogram? True or False.
-plot_all_wells = False
+plot_all_wells = True
 
 # How much plots of insidivual cells/wells do you need? Set nth=1 for all, nth=10 for every 10th, ...
 nth = 1
 
-# if recording 1 frame/hour, set time_factor to 1, if 1 frame/0.25h, set to 0.25, etc...
-time_factor = 0.25
+# if recording 1 frame/hour (384 well plate in Luminoskan), set time_factor to 1, if 1 frame/0.25h, set to 0.25, etc...
+time_factor = 1
 
 # IN REAL HOURS or 0, plot and analyze only data from this timepoint, settings for truncate_t variable - 
-treatment = 0
+treatment = 24
 
 # IN REAL HOURS or None (for whole dataset), plot and analyze only data to this timepoint, settings for end variable
-end_h = None
+end_h = 144
      
 #
 #
@@ -65,7 +69,7 @@ mydir = f'./{INPUT_DIR}analysis_output_{timestamp}/'
 signal_data = pd.read_csv(glob.glob(f'{mydir}*signal.csv')[0])
 try:
     #heatmap_mask_import = pd.read_excel(glob.glob(f'{mydir}*96mask.xlsx')[0]) # for 96mask.xlsx
-    heatmap_mask_import = pd.read_csv(glob.glob(f'{mydir}*96mask.csv')[0])   # for 96mask.csv
+    heatmap_mask_import = pd.read_csv(glob.glob(f'{mydir}*96mask*.csv')[0])   # for 96mask.csv
     heatmap_mask = heatmap_mask_import.iloc[:, 1:].T.values.flatten()
     mask = np.insert(heatmap_mask, 0, [True, True])
     flat_mask = [item for sublist in [list(i) for i in zip(heatmap_mask, heatmap_mask)] for item in sublist]  # idiotic way to make XY coordinates mask
@@ -146,7 +150,8 @@ for files_dict in all_inputs:
                                     denoised_data, locations, truncate_t=treatment, end_h=end_h, time_factor=time_factor)
 
     # V. LS PERIODOGRAM TEST FOR RHYTHMICITY
-    lspers, pgram_data, circadian_peaks, lspeak_periods, rhythmic_or_not = cr.LS_pgram(final_times, final_data)
+    #lspers, pgram_data, circadian_peaks, lspeak_periods, rhythmic_or_not = cr.LS_pgram(final_times, final_data)
+    lspers, pgram_data, circadian_peaks, lspeak_periods, rhythmic_or_not = cr.LS_pgram(final_times, final_data, circ_low=circ_low, circ_high=circ_high)
 
     # VI. GET A SINUSOIDAL FIT TO EACH CELL
     # use final_times, final_data
@@ -376,7 +381,7 @@ bars = ax.bar(phase, amp, width=phase_sd, color=colorcode, bottom=0, alpha=0.8) 
 ax.set_theta_zero_location('N') # this puts CT=0 theta=0 to North - points upwards
 ax.set_theta_direction(-1)      #reverse direction of theta increases
 ax.set_thetagrids((0, 45, 90, 135, 180, 225, 270, 315), labels=('0', '3', '6', '9', '12', '15', '18', '21'), fontweight='bold', fontsize=12)  #set theta grids and labels, **kwargs for text properties
-ax.legend(bars, genes, fontsize=8, bbox_to_anchor=(1.1, 1.1))   # legend needs sequence of labels after object bars which contains sequence of bar plots 
+#ax.legend(bars, genes, fontsize=8, bbox_to_anchor=(1.1, 1.1))   # legend needs sequence of labels after object bars which contains sequence of bar plots 
 ax.set_xlabel("Circadian phase (h)", fontsize=12)
 #plt.title("Individual phases plot", fontsize=14, fontstyle='italic')
 
