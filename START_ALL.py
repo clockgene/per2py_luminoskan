@@ -2,8 +2,8 @@
 # type >>> conda activate per2py
 # type >>> spyder
 # open this file in spyder or idle and run with F5
-# v.2021.05.24
-# changelog:  user can change the range of valid circadian periods easier
+# v.2021.05.25
+# changelog:  composite line plot
 
 from __future__ import division
 
@@ -43,7 +43,7 @@ plot_all_wells = True
 # How much plots of insidivual cells/wells do you need? Set nth=1 for all, nth=10 for every 10th, ...
 nth = 1
 
-# if recording 1 frame/hour (384 well plate in Luminoskan), set time_factor to 1, if 1 frame/0.25h, set to 0.25, etc...
+# if recording 1 frame/hour (384 well plate in Luminoskan), set time_factor to 1, if 1 frame/0.25h (96 well plate), set to 0.25, etc...
 time_factor = 1
 
 # IN REAL HOURS or 0, plot and analyze only data from this timepoint, settings for truncate_t variable - 
@@ -628,6 +628,66 @@ plt.savefig(f'{mydir}Dual_Heatmap.svg', format = 'svg', bbox_inches = 'tight')
 plt.savefig(f'{mydir}Dual_Heatmap.png', format = 'png')
 plt.clf()
 plt.close()
+
+
+############################################
+###### Composite_Raw_Line_Plot #############
+############################################
+# for 384-well plate
+if time_factor == 1:
+    fig, axs = plt.subplots(16, 24, sharex=True, sharey=True)
+    #fig.subplots_adjust(hspace=0.3, wspace=-0.9)  # negative wspace moves left and right close but there is empty space    
+    counter = 1
+    yc = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']
+    for j in range(24):
+        for i in range(16):        
+            axs[i, j].plot(data_raw[str(counter)], linewidth=0.1)
+            axs[i, j].label_outer()
+            axs[i, j].set_yticklabels([])
+            axs[i, j].set_xticklabels([]) 
+            axs[i, j].set_xlabel(f'{yc[i]}{j + 1} n.{counter}', fontsize=2, labelpad=-10) 
+            axs[i, j].set_xticks([])
+            axs[i, j].set_yticks([])
+            axs[i, j].spines['top'].set_visible(False) # to turn off individual borders 
+            axs[i, j].spines['right'].set_visible(False)
+            axs[i, j].spines['bottom'].set_visible(False)
+            axs[i, j].spines['left'].set_visible(False)            
+            counter += 1
+    
+    ### To save as bitmap png for easy viewing ###
+    plt.savefig(f'{mydir}Composite_Raw_Line_Plot.png', dpi=1000)
+    ### To save as vector svg with fonts editable in Corel ###
+    plt.savefig(f'{mydir}Composite_Raw_Line_Plot.svg', format = 'svg') #if using rasterized = True to reduce size, set-> dpi = 1000
+    plt.clf()
+    plt.close()
+
+# for 96-well plate
+if time_factor == 0.25:
+    fig, axs = plt.subplots(8, 12, sharex=True, sharey=True)
+    #fig.subplots_adjust(hspace=0.3, wspace=-0.9)  # negative wspace moves left and right close but there is empty space  
+    counter = 1
+    yc = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    for j in range(12):
+        for i in range(8):        
+            axs[i, j].plot(data_raw[str(counter)], linewidth=0.1)
+            axs[i, j].label_outer()
+            axs[i, j].set_yticklabels([])
+            axs[i, j].set_xticklabels([]) 
+            axs[i, j].set_xlabel(f'{yc[i]}{j + 1} n.{counter}', fontsize=2, labelpad=-10) 
+            axs[i, j].set_xticks([])
+            axs[i, j].set_yticks([])
+            axs[i, j].spines['top'].set_visible(False) # to turn off individual borders 
+            axs[i, j].spines['right'].set_visible(False)
+            axs[i, j].spines['bottom'].set_visible(False)
+            axs[i, j].spines['left'].set_visible(False)            
+            counter += 1
+    
+    ### To save as bitmap png for easy viewing ###
+    plt.savefig(f'{mydir}Composite_Raw_Line_Plot.png', dpi=1000)
+    ### To save as vector svg with fonts editable in Corel ###
+    plt.savefig(f'{mydir}Composite_Raw_Line_Plot.svg', format = 'svg') #if using rasterized = True to reduce size, set-> dpi = 1000
+    plt.clf()
+    plt.close()
 
 print(f'Finished Plots at {mydir}') 
 winsound.Beep(500, 800)
