@@ -31,7 +31,7 @@ INPUT_DIR = 'data/'
 INPUT_EXT = '.csv'
 
 # input files from Lumi need to be 2, id_signal and id_XY. From LV200 need only 1 trackmate output file.
-INPUT_FILES   = ['210531']
+INPUT_FILES   = ['id']
 
 # what is the lowest and highest expected period value (default is 18 and 30 h)
 circ_low = 15
@@ -41,7 +41,7 @@ circ_high = 60
 plot_all_wells = True
 
 # How much plots of insidivual cells/wells do you need? Set nth=1 for all, nth=10 for every 10th, ...
-nth = 20
+nth = 1
 
 # if recording 1 frame/hour (384 well plate in Luminoskan), set time_factor to 1, if 1 frame/0.25h (96 well plate), set to 0.25, etc...
 time_factor = 1
@@ -50,7 +50,7 @@ time_factor = 1
 treatment = 0
 
 # IN REAL HOURS or None (for whole dataset), plot and analyze only data to this timepoint, settings for end variable
-end_h = 144
+end_h = None
      
 #
 #
