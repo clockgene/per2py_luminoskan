@@ -2,8 +2,8 @@
 # type >>> conda activate per2py
 # type >>> spyder
 # open this file in spyder or idle and run with F5
-# v.2021.05.25
-# changelog:  composite line plot
+# v.2021.06.08
+# changelog:  heatmap coordinates
 
 from __future__ import division
 
@@ -31,23 +31,23 @@ INPUT_DIR = 'data/'
 INPUT_EXT = '.csv'
 
 # input files from Lumi need to be 2, id_signal and id_XY. From LV200 need only 1 trackmate output file.
-INPUT_FILES   = ['210517']
+INPUT_FILES   = ['210531']
 
 # what is the lowest and highest expected period value (default is 18 and 30 h)
 circ_low = 15
-circ_high = 55
+circ_high = 60
 
 # Do you want to plot even empty/low signal wells in XY-heatmap, polar plot and histogram? True or False.
 plot_all_wells = True
 
 # How much plots of insidivual cells/wells do you need? Set nth=1 for all, nth=10 for every 10th, ...
-nth = 1
+nth = 20
 
 # if recording 1 frame/hour (384 well plate in Luminoskan), set time_factor to 1, if 1 frame/0.25h (96 well plate), set to 0.25, etc...
 time_factor = 1
 
 # IN REAL HOURS or 0, plot and analyze only data from this timepoint, settings for truncate_t variable - 
-treatment = 24
+treatment = 0
 
 # IN REAL HOURS or None (for whole dataset), plot and analyze only data to this timepoint, settings for end variable
 end_h = 144
@@ -326,7 +326,7 @@ cmap="YlGnBu"
 mydir = f'./{INPUT_DIR}analysis_output_{timestamp}/'
 
 # LOAD DATA FOR PLOTTING FROM ANALYSIS FOLDER
-data = pd.read_csv(glob.glob(f'{mydir}*oscillatory_params.csv')[0])
+data = pd.read_csv(glob.glob(f'{mydir}*oscillatory_params.csv')[0], dtype={'X': int, 'Y': int})
 data_dd = pd.read_csv(glob.glob(f'{mydir}*signal_detrend_denoise.csv')[0])
 data_raw = pd.read_csv(glob.glob(f'{mydir}*signal.csv')[0])  # if mask used, this already contains filtered data w/o empty wells
 # Filter out data from wells below 10xSD from median signal trend, but leave XY for heatmap if no mask used
@@ -500,7 +500,7 @@ heat1 = sns.heatmap(df_heat.astype(float), annot=False, square=True, cbar=True, 
 
 fig.suptitle(suptitle1, fontsize=12, fontweight='bold')
 axs[0].set_title(titleA, fontsize=10, fontweight='bold')
-axs[0].set(xlabel='X (pixels)', ylabel='Y (pixels)')
+axs[0].set(xlabel='columns', ylabel='rows')
 
 ### To save as vector svg with fonts editable in Corel ###
 plt.rcParams['svg.fonttype'] = 'none'    #to store text as text, not as path in xml-coded svg file, but avoid bugs that prevent rotation of ylabes when used before setting them
@@ -527,7 +527,7 @@ heat1 = sns.heatmap(df_heat.astype(float), annot=False, square=True, cbar=True, 
 
 fig.suptitle(suptitle1, fontsize=12, fontweight='bold')
 axs[0].set_title(titleA, fontsize=10, fontweight='bold')
-axs[0].set(xlabel='X (pixels)', ylabel='Y (pixels)')
+axs[0].set(xlabel='columns', ylabel='rows')
 
 ### To save as vector svg with fonts editable in Corel ###
 plt.rcParams['svg.fonttype'] = 'none'    #to store text as text, not as path in xml-coded svg file, but avoid bugs that prevent rotation of ylabes when used before setting them
@@ -554,7 +554,7 @@ heat1 = sns.heatmap(df_heat.astype(float), annot=False, square=True, cbar=True, 
 
 fig.suptitle(suptitle1, fontsize=12, fontweight='bold')
 axs[0].set_title(titleA, fontsize=10, fontweight='bold')
-axs[0].set(xlabel='X (pixels)', ylabel='Y (pixels)')
+axs[0].set(xlabel='columns', ylabel='rows')
 
 ### To save as vector svg with fonts editable in Corel ###
 plt.rcParams['svg.fonttype'] = 'none'    #to store text as text, not as path in xml-coded svg file, but avoid bugs that prevent rotation of ylabes when used before setting them
@@ -581,7 +581,7 @@ heat1 = sns.heatmap(df_heat.astype(float), annot=False, square=True, cbar=True, 
 
 fig.suptitle(suptitle1, fontsize=12, fontweight='bold')
 axs[0].set_title(titleA, fontsize=10, fontweight='bold')
-axs[0].set(xlabel='X (pixels)', ylabel='Y (pixels)')
+axs[0].set(xlabel='columns', ylabel='rows')
 
 ### To save as vector svg with fonts editable in Corel ###
 plt.rcParams['svg.fonttype'] = 'none'    #to store text as text, not as path in xml-coded svg file, but avoid bugs that prevent rotation of ylabes when used before setting them
