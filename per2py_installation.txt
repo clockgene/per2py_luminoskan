@@ -10,8 +10,8 @@ https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environme
 
 # Create per2py environment and install necessary packages by yml file:
 # click in Windows on Start menu, run Anaconda PowerShell prompt (as admin if possible) and check the current work directory 
-# copy file environment.yml to current directory (usually C:\Users\username), then type on Anaconda prompt and wait (may take a long time):
-conda env create -f environment.yml
+# copy file p2p.yml to current directory (usually C:\Users\username), then type on Anaconda prompt and wait (may take a long time):
+conda env create -f p2p.yml
 
 OR
 
