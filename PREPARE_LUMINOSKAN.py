@@ -9,6 +9,7 @@ import pandas as pd
 import settings
 import os, shutil
 
+# Use .csv file as input, change format in Excel (.xls is not compatible with latest environment)
 
 # Choose, which plate - if 96 well, it has 12 columns, if 384 well, it has 24 columns.
 plate = 96    # comment out (add #) for 384-well plate
@@ -43,6 +44,7 @@ def split_data(data, i=2, j=10, k=1, l=13, modulus=10, start=2):
     return df
 
 # read input file
+# xlrd not compatible with new packages, just use csv or run in pip/idle env
 try:
     data = pd.read_excel(settings.INPUT_DIR + settings.INPUT_FILE)
 except:
