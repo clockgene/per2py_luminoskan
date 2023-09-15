@@ -2,8 +2,8 @@
 # type >>> conda activate per2py
 # type >>> spyder
 # open this file in spyder or idle and run with F5
-# v.2022.08.24
-# changelog:  Rayleigh uniformity test
+# v.2023.09.15
+# changelog:  max_degree
 
 from __future__ import division
 
@@ -31,7 +31,10 @@ INPUT_DIR = 'data/'
 INPUT_EXT = '.csv'
 
 # input files from Lumi need to be 2, id_signal and id_XY. From LV200 need only 1 trackmate output file.
-INPUT_FILES   = ['170607']
+INPUT_FILES   = ['230808']
+
+# default is 6, lower values speed up fitting DecayingSinusoid by reducing overfitting, experimental !
+max_degree = 3
 
 # what is the lowest and highest expected period value (default is 18 and 30 h)
 circ_low = 15
@@ -44,7 +47,7 @@ plot_all_wells = True
 nth = 8
 
 # if recording 1 frame/hour (384 well plate in Luminoskan), set time_factor to 1, if 1 frame/0.25h (96 well plate), set to 0.25, etc...
-time_factor = 1
+time_factor = 0.25
 
 # IN REAL HOURS or 0, plot and analyze only data from this timepoint, settings for truncate_t variable - 
 treatment = 0
@@ -160,7 +163,7 @@ for files_dict in all_inputs:
     # use forcing to ensure period within 1h of LS peak period
 
     sine_times, sine_data, phase_data, refphases, periods, amplitudes, decays, r2s, meaningful_phases =\
-         cr.sinusoidal_fitting(final_times, final_data, rhythmic_or_not,
+         cr.sinusoidal_fitting(final_times, final_data, rhythmic_or_not, max_degree=max_degree,
                                fit_times=raw_times, forced_periods=lspeak_periods)
    
     # get metrics

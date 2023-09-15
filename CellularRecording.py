@@ -1,7 +1,7 @@
 '''
 File containing functions useful for data analysis.
-# v2022.02.22
-# plot 1x1 instead of EVals when Savgol filtering, mod def truncate_and_interpolate_before()
+# v2023.09.15
+# plot 1x1 instead of EVals when Savgol filtering, mod def truncate_and_interpolate_before(), max_degree
 '''
 
 from __future__ import division
@@ -523,7 +523,7 @@ def savgolsmooth(times, detrended_data, time_factor):
 
 
 
-def sinusoidal_fitting(times, data, rhythmic_or_not, fit_times=None,
+def sinusoidal_fitting(times, data, rhythmic_or_not, max_degree=None, fit_times=None,
                        forced_periods=None):
     """
     Takes detrended and denoised data and times, and fits a damped sinusoid to
@@ -535,6 +535,8 @@ def sinusoidal_fitting(times, data, rhythmic_or_not, fit_times=None,
 
     If forced_periods are supplied, the sine fit will be within 1h of the forced
     period.
+    
+    max_degree was added as parameter, so it can be modified from the START_ALL
     """
     timer = plo.laptimer()
     print("Sinusoidal fitting... time: ",)
@@ -557,7 +559,8 @@ def sinusoidal_fitting(times, data, rhythmic_or_not, fit_times=None,
             
             # copy data for editing
             cell = np.copy(idata)
-            model = dsin.DecayingSinusoid(times, cell)
+            # model = dsin.DecayingSinusoid(times, cell)
+            model = dsin.DecayingSinusoid(times, cell, max_degree)
             # fit the data with the polynomial+sinusoid
             # note we are not using model averaging, we are
             # just taking the single best model by AICc
