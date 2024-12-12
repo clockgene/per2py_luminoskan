@@ -2,8 +2,8 @@
 # type >>> conda activate per2py
 # type >>> spyder
 # open this file in spyder or idle and run with F5
-# v.2023.09.15
-# changelog:  max_degree
+# v.2024.12.12
+# changelog:  polar scatter plot
 
 from __future__ import division
 
@@ -31,7 +31,7 @@ INPUT_DIR = 'data/'
 INPUT_EXT = '.csv'
 
 # input files from Lumi need to be 2, id_signal and id_XY. From LV200 need only 1 trackmate output file.
-INPUT_FILES   = ['230808']
+INPUT_FILES   = ['241127']
 
 # default is 6, lower values speed up fitting DecayingSinusoid by reducing overfitting, experimental !
 max_degree = 3
@@ -44,10 +44,10 @@ circ_high = 60
 plot_all_wells = True
 
 # How much plots of insidivual cells/wells do you need? Set nth=1 for all, nth=10 for every 10th, ...
-nth = 8
+nth = 20
 
 # if recording 1 frame/hour (384 well plate in Luminoskan), set time_factor to 1, if 1 frame/0.25h (96 well plate), set to 0.25, etc...
-time_factor = 0.25
+time_factor = 1
 
 # IN REAL HOURS or 0, plot and analyze only data from this timepoint, settings for truncate_t variable - 
 treatment = 0
@@ -470,6 +470,47 @@ axh.annotate(f'p={np.format_float_scientific(pval_Rt, precision=4)}', xy=(v_angl
 plt.savefig(f'{mydir}Histogram_Phase.svg', format = 'svg', bbox_inches = 'tight') #if using rasterized = True to reduce size, set-> dpi = 1000
 ### To save as bitmap png for easy viewing ###
 plt.savefig(f'{mydir}Histogram_Phase.png', bbox_inches = 'tight')
+#plt.show()
+plt.clf()
+plt.close()
+
+
+# POLAR SCATTER PLOT, needs work
+def create_second_list(original_list):
+    second_list = []
+    count_dict = {}
+
+    for num in original_list:
+        if num not in count_dict:
+            count_dict[num] = 1
+            second_list.append(1)
+        else:
+            count_dict[num] += 0.05
+            second_list.append(1 + count_dict[num] - 1)
+
+    return second_list
+
+phase_rounded = np.round(phase, 1)
+r_from_amp = create_second_list(phase_rounded)
+dfr = pd.DataFrame(r_from_amp)
+max_size = max(dfr[0].value_counts()) # this is cca. radius of the plot - use it to change v_length in annotate, but must be for all compared plots same
+ax = plt.subplot(111, projection='polar')                                                       #plot with polar projection
+ax.scatter(phase_rounded, r_from_amp, alpha=0.5, marker=".", edgecolors='none', color='black') # color=colorcode,
+ax.set_theta_zero_location('N') # this puts CT=0 theta=0 to North - points upwards
+ax.set_theta_direction(-1)      #reverse direction of theta increases
+ax.set_thetagrids((0, 45, 90, 135, 180, 225, 270, 315), labels=('0', '3', '6', '9', '12', '15', '18', '21'), fontweight='bold', fontsize=12)  #set theta grids and labels, **kwargs for text properties
+ax.yaxis.grid(False)   # turns off circles
+ax.xaxis.grid(False)  # turns off radial grids
+ax.set_yticklabels([])
+ax.tick_params(pad=2)
+ax.set_xlabel("Circadian phase (h)", fontsize=12)   
+ax.annotate('',xy=(v_angle, v_length/20), xytext=(v_angle,0), xycoords='data', arrowprops=dict(width=0.5, color='black', headwidth=5, headlength=5)) # , headlength=10
+ax.annotate(f'p={np.format_float_scientific(pval_Rt, precision=4)}', xy=(v_angle, v_length))
+
+### To save as vector svg with fonts editable in Corel ###
+plt.savefig(f'{mydir}Phase scatter plot.svg', format = 'svg', bbox_inches = 'tight') #if using rasterized = True to reduce size, set-> dpi = 1000
+### To save as bitmap png for easy viewing ###
+# plt.savefig(f'{mydir}Phase scatter plot.png', bbox_inches = 'tight')    # this is very slow when number of rois is > 500
 #plt.show()
 plt.clf()
 plt.close()
