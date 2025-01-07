@@ -2,8 +2,8 @@
 # type >>> conda activate per2py
 # type >>> spyder
 # open this file in spyder or idle and run with F5
-# v.2024.12.12
-# changelog:  polar scatter plot
+# v.2025.01.07
+# changelog:  polar scatter plot arrow scaler
 
 from __future__ import division
 
@@ -31,7 +31,7 @@ INPUT_DIR = 'data/'
 INPUT_EXT = '.csv'
 
 # input files from Lumi need to be 2, id_signal and id_XY. From LV200 need only 1 trackmate output file.
-INPUT_FILES   = ['241127']
+INPUT_FILES   = ['s170607']
 
 # default is 6, lower values speed up fitting DecayingSinusoid by reducing overfitting, experimental !
 max_degree = 3
@@ -44,7 +44,7 @@ circ_high = 60
 plot_all_wells = True
 
 # How much plots of insidivual cells/wells do you need? Set nth=1 for all, nth=10 for every 10th, ...
-nth = 20
+nth = 1
 
 # if recording 1 frame/hour (384 well plate in Luminoskan), set time_factor to 1, if 1 frame/0.25h (96 well plate), set to 0.25, etc...
 time_factor = 1
@@ -503,14 +503,16 @@ ax.yaxis.grid(False)   # turns off circles
 ax.xaxis.grid(False)  # turns off radial grids
 ax.set_yticklabels([])
 ax.tick_params(pad=2)
-ax.set_xlabel("Circadian phase (h)", fontsize=12)   
-ax.annotate('',xy=(v_angle, v_length/20), xytext=(v_angle,0), xycoords='data', arrowprops=dict(width=0.5, color='black', headwidth=5, headlength=5)) # , headlength=10
-ax.annotate(f'p={np.format_float_scientific(pval_Rt, precision=4)}', xy=(v_angle, v_length))
+ax.set_xlabel("Circadian phase (h)", fontsize=12) 
+# scale v_length to match radius=1, if no Rayleigh vector arrow, make this smaller, fine-tune only possible in Composite
+scaler = 0.25
+ax.annotate('',xy=(v_angle, v_length * scaler), xytext=(v_angle,0), xycoords='data', arrowprops=dict(width=0.5, color='black', headwidth=5, headlength=5)) # , headlength=10
+ax.annotate(f'p={np.format_float_scientific(pval_Rt, precision=4)}', xy=(v_angle, v_length * scaler))
 
 ### To save as vector svg with fonts editable in Corel ###
 plt.savefig(f'{mydir}Phase scatter plot.svg', format = 'svg', bbox_inches = 'tight') #if using rasterized = True to reduce size, set-> dpi = 1000
 ### To save as bitmap png for easy viewing ###
-# plt.savefig(f'{mydir}Phase scatter plot.png', bbox_inches = 'tight')    # this is very slow when number of rois is > 500
+plt.savefig(f'{mydir}Phase scatter plot.png', bbox_inches = 'tight')    # this is very slow when number of rois is > 500
 #plt.show()
 plt.clf()
 plt.close()
