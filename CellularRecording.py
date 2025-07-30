@@ -150,7 +150,7 @@ def import_data(raw_signal, raw_xy):
 
     print("Importing data... time: ",)
     header = np.genfromtxt(raw_signal, delimiter=',')[0, :]
-    raw_times = np.genfromtxt(raw_signal, delimiter=',')[1:, 0]
+    raw_times = np.genfromtxt(raw_signal, delimiter=',')[1:, 1]
     raw_data = np.genfromtxt(raw_signal, delimiter=',')[1:, 2:]
     locations = np.genfromtxt(raw_xy, delimiter=',')[2:, 3:]
 
