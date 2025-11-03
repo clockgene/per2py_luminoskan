@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Feb  3 13:01:03 2021
-# v2021.04.27
+# v2025.03.11
 @author: Martin.Sladek
 """
 import numpy  as np
@@ -13,8 +13,7 @@ import os, shutil
 
 # Choose, which plate - if 96 well, it has 12 columns, if 384 well, it has 24 columns.
 plate = 96    # comment out (add #) for 384-well plate
-#plate = 384   # uncomment (delete # on this line) for 384-well plate
-
+# plate = 384   # uncomment (delete # on this line) for 384-well plate
 
 # calls global variables from module settings.py, for tkinter file selecting
 settings.init()
@@ -26,17 +25,22 @@ def split_data(data, i=2, j=10, k=1, l=13, modulus=10, start=2):
     for index in data.iloc[:, k:l].index: 
         if (index + start) % modulus == 0:
             try:
-                if sum(sum(data.iloc[(index + i + start):(index + j + start), k:l].T.values)) > 0:
+                if sum(sum(data.iloc[(index + i + start):(index + j + start), k:l].T.values.astype(float))) > 0:
                     timelist.append(np.array(data.iloc[(index + i + start):(index + j + start), k:l]).T.flatten().astype(float))    
                     time.append((data.iloc[index + i + start, l+2])/3600)                         
-            except TypeError:                
+            except TypeError:
+                print(f'Error {index}')                
+                pass
+            except ValueError:
+                print(f'End of data at row {index}')                
                 pass
         
     df = pd.DataFrame(timelist)    
     df.columns = [f'{i}' for i in range(1, ((j-i)*(l-k)+1))]
     
     # add time and frame columns
-    df.insert(0, 'Frame', np.arange(0, len(df)*0.25, 0.25))
+    #df.insert(0, 'Frame', np.arange(0, len(df)*0.25, 0.25))
+    df.insert(0, 'Frame', np.arange(0, len(df)*1, 1))
     df.insert(1, 'TimesH', time)
     
     print('Data processed.')
@@ -44,9 +48,8 @@ def split_data(data, i=2, j=10, k=1, l=13, modulus=10, start=2):
     return df
 
 # read input file
-# xlrd not compatible with new packages, just use csv or run in pip/idle env
 try:
-    data = pd.read_excel(settings.INPUT_DIR + settings.INPUT_FILE)
+    data = pd.read_excel(settings.INPUT_DIR + settings.INPUT_FILE)  # xlrd not compatible with new packages, just use csv or run in pip/idle env
 except:
     data = pd.read_csv(settings.INPUT_DIR + settings.INPUT_FILE)
 
